@@ -7,7 +7,7 @@
 </style>
 <div class="card uper">
   <div class="card-header">
-    Edit Share
+    Modifier Document
   </div>
   <div class="card-body">
     @if ($errors->any())

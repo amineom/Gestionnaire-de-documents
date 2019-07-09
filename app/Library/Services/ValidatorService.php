@@ -3,9 +3,9 @@ namespace App\Library\Services;
   
 class ValidatorService
 {
-    public function ValidateInput($document1)
+    public function StoreDocument ($document1)
     {
-     if (isNull())
-      return $document1="    minz prov";
+			$nomfichier = $document1->getClientOriginalName();
+            $document1->storeAs('public\upload', $nomfichier);
     }
 }

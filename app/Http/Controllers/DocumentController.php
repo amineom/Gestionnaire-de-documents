@@ -1,14 +1,10 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Document;
 use Illuminate\Http\Request;
 use App\Library\Services\ValidatorService;
-
 class DocumentController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('auth');
@@ -20,12 +16,9 @@ class DocumentController extends Controller
      */
     public function index()
     {
-
         $documents = Document::All();
-
         return view('documents.index', compact('documents'));
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -33,10 +26,8 @@ class DocumentController extends Controller
      */
     public function create()
     {
-
         return view('documents.create');
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -49,21 +40,17 @@ class DocumentController extends Controller
             'document_titre' => 'required',
             'document_description' => 'required',
             'document_fichier' => 'required',
-
         ]);
-
-
-        $nomfichier = (string) $request->document_id . $request->document_fichier->getClientOriginalName();
-        $request->document_fichier->storeAs('public/upload', $nomfichier);
+        //call the function in service provider
+        $nomfichier = $request->document_fichier->getClientOriginalName();
+		$customServiceInstance->StoreDocument( $request->document_fichier);
         $document = new Document;
         $document->document_titre = $request->document_titre;
         $document->document_description = $request->document_description;
         $document->document_fichier = $nomfichier;
-        //$validat=$customServiceInstance->ValidateInput( $document->document_fichier);
         $document->save();
         return redirect('/documents')->with('success', 'Document has been added');
     }
-
     /**
      * Display the specified resource.
      *
@@ -74,7 +61,6 @@ class DocumentController extends Controller
     {
         //
     }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -84,10 +70,8 @@ class DocumentController extends Controller
     public function edit($id)
     {
         $document = Document::find($id);
-
         return view('documents.edit', compact('document'));
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -95,28 +79,25 @@ class DocumentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, ValidatorService $customServiceInstance)
     {
         $request->validate([
             'document_titre' => 'required',
             'document_description' => 'required',
-
         ]);
-
         if ($request->hasFile('document_fichier')) {
-
+            //call the function in service provider
+            $customServiceInstance->StoreDocument( $request->document_fichier);
+            //update parameters of document
             $nomfichier = $request->document_fichier->getClientOriginalName();
-            $request->document_fichier->storeAs('public/upload', $nomfichier);
             $document = Document::find($id);
             $document->document_titre = $request->document_titre;
             $document->document_description = $request->document_description;
             $document->document_fichier = $nomfichier;
             $document->save();
-
             return redirect('/documents')->with('success', 'Document has been updated');
         }
     }
-
     /**
      * Remove the specified resource from storage.
      *
@@ -129,7 +110,6 @@ class DocumentController extends Controller
         // $file = $document->document_fichier;    
         $document->delete();
         //unlink(storage_path('public/upload/'.$file));
-
         return redirect('/documents')->with('success', 'Document has been deleted Successfully');
     }
 }

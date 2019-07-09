@@ -10,7 +10,7 @@
 </style>
 <div class="card uper">
   <div class="card-header">
-    Add Share
+    Creer nouveau document
   </div>
   <div class="card-body">
     @if ($errors->any())
