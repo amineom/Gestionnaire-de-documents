@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Document;
 use Illuminate\Http\Request;
+use App\Library\Services\ValidatorService;
 
 class DocumentController extends Controller
 {
@@ -18,9 +20,10 @@ class DocumentController extends Controller
      */
     public function index()
     {
+
         $documents = Document::All();
 
-        return view('documents.index',compact('documents'));
+        return view('documents.index', compact('documents'));
     }
 
     /**
@@ -30,6 +33,7 @@ class DocumentController extends Controller
      */
     public function create()
     {
+
         return view('documents.create');
     }
 
@@ -39,25 +43,25 @@ class DocumentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {   
-        
-        if($request->hasFile('document_fichier')){
-    		
-            $nomfichier = $request->document_fichier->getClientOriginalName();	
-            $request->document_fichier->storeAs('public/upload',$nomfichier);	
-            $document = new Document;
-            $document->document_titre = $request->document_titre;
-            $document->document_description = $request->document_description;
-            $document->document_fichier = $nomfichier;
-            $document->save();
-            echo 'succed';
-            return redirect('/documents')->with('success', 'Document has been added'); echo 'succes';
-                }
-                echo 'echec';
+    public function store(Request $request, ValidatorService $customServiceInstance)
+    {
+        $request->validate([
+            'document_titre' => 'required',
+            'document_description' => 'required',
+            'document_fichier' => 'required',
 
-          
+        ]);
 
+
+        $nomfichier = (string) $request->document_id . $request->document_fichier->getClientOriginalName();
+        $request->document_fichier->storeAs('public/upload', $nomfichier);
+        $document = new Document;
+        $document->document_titre = $request->document_titre;
+        $document->document_description = $request->document_description;
+        $document->document_fichier = $nomfichier;
+        //$validat=$customServiceInstance->ValidateInput( $document->document_fichier);
+        $document->save();
+        return redirect('/documents')->with('success', 'Document has been added');
     }
 
     /**
@@ -94,23 +98,23 @@ class DocumentController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'document_titre'=>'required',
-            'document_description'=> 'required',
-            
-          ]);
-    
-          if($request->hasFile('document_fichier')){
-    		
-            $nomfichier = $request->document_fichier->getClientOriginalName();	
-            $request->document_fichier->storeAs('public/upload',$nomfichier);	
+            'document_titre' => 'required',
+            'document_description' => 'required',
+
+        ]);
+
+        if ($request->hasFile('document_fichier')) {
+
+            $nomfichier = $request->document_fichier->getClientOriginalName();
+            $request->document_fichier->storeAs('public/upload', $nomfichier);
             $document = Document::find($id);
             $document->document_titre = $request->document_titre;
             $document->document_description = $request->document_description;
             $document->document_fichier = $nomfichier;
             $document->save();
-           
-            return redirect('/documents')->with('success', 'Document has been updated'); 
-                }
+
+            return redirect('/documents')->with('success', 'Document has been updated');
+        }
     }
 
     /**
@@ -122,7 +126,9 @@ class DocumentController extends Controller
     public function destroy($id)
     {
         $document = Document::find($id);
+        // $file = $document->document_fichier;    
         $document->delete();
+        //unlink(storage_path('public/upload/'.$file));
 
         return redirect('/documents')->with('success', 'Document has been deleted Successfully');
     }

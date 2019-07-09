@@ -30,7 +30,7 @@
 <label class="control-label" >Titre</label>
 <div class="controls">
     <input type="text"  name="document_titre" placeholder="" class="input-xlarge">
-    
+
 </div>
 </div>
 
@@ -39,7 +39,7 @@
 <label class="control-label" >Description</label>
 <div class="controls">
     <input type="text"  name="document_description" placeholder="" class="input-xlarge">
-    
+
 </div>
 </div>
 <div class="custom-file">
@@ -49,7 +49,7 @@
 </div>
 
 
-</br>
+
 
 <div class="control-group">
 <!-- Button -->
