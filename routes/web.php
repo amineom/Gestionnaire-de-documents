@@ -15,6 +15,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::resource('documents', 'DocumentController');
+
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+

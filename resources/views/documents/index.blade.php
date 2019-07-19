@@ -2,7 +2,7 @@
 
 
 @section('content')
-<script src="js/jquery.js" type="text/javascript"></script>
+
 <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet">
 <style>
@@ -53,6 +53,17 @@
         </tbody>
       </table>
     </div>
+
+
+
+
+
+
+
+
+
+
+
 
 
     <script type="text/javascript">

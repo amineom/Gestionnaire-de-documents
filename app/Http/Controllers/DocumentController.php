@@ -1,13 +1,18 @@
 <?php
 namespace App\Http\Controllers;
+use App\Http\Middleware\AdminMiddleware;
 use App\Document;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Http\Kernel;
 use App\Library\Services\ValidatorService;
 class DocumentController extends Controller
 {
     public function __construct()
     {
+
         $this->middleware('auth');
+        $this->middleware('isAdmin',['only'=>['create']]);
+
     }
     /**
      * Display a listing of the resource.
@@ -26,6 +31,7 @@ class DocumentController extends Controller
      */
     public function create()
     {
+
         return view('documents.create');
     }
     /**
@@ -84,6 +90,7 @@ class DocumentController extends Controller
         $request->validate([
             'document_titre' => 'required',
             'document_description' => 'required',
+            'document_fichier' => 'required',
         ]);
         if ($request->hasFile('document_fichier')) {
             //call the function in service provider
